@@ -7,15 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
-public class EmpoyeeController {
+public class EmployeeController {
 
     @Autowired
-    private final EmployeeService employeeService;
+    private EmployeeService employeeService;
 
-    public EmpoyeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
@@ -25,37 +23,29 @@ public class EmpoyeeController {
         return "index";
     }
 
-    @PostMapping("/createEmployee")
+    @PostMapping("/create")
     public String createEmployee(@ModelAttribute("employee") Employee employee){
-        employeeService.createEmployee(employee);
+        this.employeeService.createEmployee(employee);
         return "redirect:/";
     }
 
-    @GetMapping("/showEmployeeForm")
+    @GetMapping("/show")
     public String viewForm(Model model){
         Employee employee = new Employee();
         model.addAttribute("employee", employee);
         return "new_employee";
     }
 
-   /* @GetMapping("/api/v1/get/{id}/")
-    public Optional<Employee> getEmployeeById(@PathVariable Long id){
-        return employeeService.getEmployeeById(id);
+    @GetMapping("/showFormUpdate/{id}")
+    public String showForUpdate(@PathVariable (value = "id") long id, Model model){
+        Employee employee = employeeService.getEmployeeById(id);
+        model.addAttribute("employee", employee);
+        return "update_employee";
     }
 
-    @GetMapping("/")
-    public String getAllEmployees( Model model){
-        model.addAttribute("employeeList", employeeService.getAllEmployees());
-        return "index";
+    @GetMapping("deleteEmployee/{id}")
+    public String deleteEmployee(@PathVariable (value = "id") Long id){
+        this.employeeService.deleteById(id);
+        return "redirect:/";
     }
-
-    @DeleteMapping("api/v1/delete/{id}/")
-    public void deleteById(@PathVariable Long id){
-        employeeService.deleteById(id);
-    }
-
-    @DeleteMapping("api/v1/delete/")
-    public void deleteAll(){
-        employeeService.deleteAll();
-    }*/
 }
